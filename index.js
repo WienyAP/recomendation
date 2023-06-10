@@ -4,7 +4,7 @@ const bodyParser = require ("body-parser");
 const cookieParser = require ("cookie-parser");
 const cors = require ("cors");
 const { Sequelize } = require ("sequelize");
-// import mysql = require (mysql2")
+
 dotenv.config();
 const app = express();
 
@@ -21,7 +21,7 @@ try {
     console.log(error);    
 };
 
-// app.use(cors({ credentials: true, origin: '0.0.0.0'}));
+app.use(cors({ credentials: true, origin: '0.0.0.0'}));
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -46,7 +46,9 @@ const Rec = db.define('recommendation', {
 //get all of data Recommendation
 app.get('/DataRec', async(req, res) => {
     try {
-        const rec = await Rec.findAll();
+        const rec = await Rec.findAll({
+            attributes: ['id', 'Land_Name', 'TypeofSoil', 'soil_pH', 'Soil_Organic', 'Plant_Type']
+        });
         res.json(rec);
     } catch (error) {
         console.log(error);

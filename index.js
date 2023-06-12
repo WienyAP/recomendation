@@ -4,13 +4,17 @@ const bodyParser = require ("body-parser");
 const cookieParser = require ("cookie-parser");
 const cors = require ("cors");
 const { Sequelize } = require ("sequelize");
-
 dotenv.config();
 const app = express();
 
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`Server Running at port ${PORT}`)
+});
+
 //configuration database
-const db = new Sequelize('recommendation', 'root', '123', {
-    host: '34.101.227.187', //sql instance public IP
+const db = new Sequelize('recommendation', 'root', '', {
+    host: 'localhost', //sql instance public IP
     dialect: 'mysql'
 });
 
@@ -55,6 +59,22 @@ app.get('/DataRec', async(req, res) => {
     }
 });
 
+//get data Recommendation by Id
+app.get('/DataRec/:id', async(req, res) => {
+    try {
+        const rec = await Rec.findOne({
+            attributes: ['id', 'Land_Name', 'TypeofSoil', 'soil_pH', 'Soil_Organic', 'Plant_Type'],
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json(rec);
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+//create new data recommendation
 app.post('/newRec', async(req, res) => {
     const {Land_name, TypeofSoil, soil_pH, Soil_Organic, Plant_Type} = req.body;
     //create data into db
@@ -72,6 +92,7 @@ app.post('/newRec', async(req, res) => {
     }
 });
 
+//delete data recommendation by id
 app.delete('/DataRec/:id', async(req, res) => {
     const id = req.params.id;
 
@@ -85,5 +106,3 @@ app.delete('/DataRec/:id', async(req, res) => {
         console.log(error);        
     }
 });
-
-app.listen(8080, () => console.log('Server running at port 8080'));

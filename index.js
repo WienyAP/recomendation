@@ -46,7 +46,6 @@ const Rec = db.define('recommendation', {
 //     await db.sync();
 // })();
 
-
 //get all of data Recommendation
 app.get('/DataRec', async(req, res) => {
     try {
